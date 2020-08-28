@@ -22,8 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     });
 
-
-
     _timer = Timer.periodic(Duration(milliseconds: 100), (Timer t) {
       setState(() {
         _pos += 1;

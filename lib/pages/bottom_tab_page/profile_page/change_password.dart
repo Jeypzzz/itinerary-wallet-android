@@ -105,7 +105,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              DefTextfield(
+              DefTextField(
                 controller: emailController,
                 textHint: 'Email',
                 icon: 'assets/Icons/email.png',
@@ -113,7 +113,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 type: TextInputType.emailAddress,
               ),
               SizedBox(height: 20),
-              DefTextfield(
+              DefTextField(
                 controller: currentPasswordController,
                 textHint: 'Current Password',
                 icon: 'assets/Icons/lock.png',
@@ -121,7 +121,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 type: TextInputType.text,
               ),
               SizedBox(height: 20),
-              DefTextfield(
+              DefTextField(
                 controller: newPasswordController,
                 textHint: 'New Password',
                 icon: 'assets/Icons/lock.png',
@@ -129,7 +129,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 type: TextInputType.text,
               ),
               SizedBox(height: 20),
-              DefTextfield(
+              DefTextField(
                 controller: newPasswordController,
                 textHint: 'Confirm New Password',
                 icon: 'assets/Icons/lock.png',

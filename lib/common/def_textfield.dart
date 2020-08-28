@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DefTextfield extends StatelessWidget {
+class DefTextField extends StatelessWidget {
   final String textHint;
   final String icon;
   final bool withShadow;
@@ -8,7 +8,7 @@ class DefTextfield extends StatelessWidget {
   final TextInputType type;
   final TextEditingController controller;
 
-  DefTextfield({
+  DefTextField({
     this.textHint,
     this.icon,
     this.withShadow = false,
@@ -44,7 +44,7 @@ class DefTextfield extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: Image.asset(icon),
+                child: Image.asset(icon, color: Colors.black,),
               ),
               enabledBorder: outlineBorder(),
               focusedBorder: outlineBorder(),

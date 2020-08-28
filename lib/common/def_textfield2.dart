@@ -42,7 +42,7 @@ class DefTextField2 extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: TextFormField(
-              initialValue: initialValue,
+              controller: controller,
               keyboardType: type,
               enabled: enabled,
               validator: validator,

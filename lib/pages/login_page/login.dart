@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
           // print(res['id']);
           setPreferences(
               res['id'], res['first_name'], res['last_name'], res['email']);
-          Navigator.pushNamed(context, '/home');
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
         }
       }
     } catch (error) {
@@ -118,12 +118,12 @@ class _LoginState extends State<Login> {
       child: Column(
         children: <Widget>[
           SizedBox(height: 30),
-          DefTextfield(
+          DefTextField(
               controller: emailController,
               textHint: 'Email',
               icon: 'assets/Icons/email.png'),
           SizedBox(height: 20),
-          DefTextfieldObscured(
+          DefTextFieldObscured(
             controller: passwordController,
             textHint: 'Password',
             icon: 'assets/Icons/lock.png',

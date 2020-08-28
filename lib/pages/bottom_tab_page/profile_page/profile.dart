@@ -11,60 +11,51 @@ class Profile extends StatefulWidget {
   _ProfileState createState() => _ProfileState();
 }
 
-String firstName;
-String lastName;
-String email;
-
-bool _isLoading = false;
-
 class _ProfileState extends State<Profile> {
+
+  bool _isLoading = false;
+  final emailController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
-      builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
-        final prefs = snapshot.data;
-        firstName = (prefs.getString('firstName'));
-        lastName = (prefs.getString('lastName'));
-        email = (prefs.getString('email'));
-
-        return SafeArea(
-          child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            appBar: DefHeader(
-              onPressed: () => Navigator.of(context).pop(),
-              visibility: true,
-            ),
-            body: SingleChildScrollView(
-              child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : Container(
-                height: MediaQuery.of(context).size.height -
-                    (82 + MediaQuery.of(context).padding.top),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    DefTitle(title: 'USER PROFILE'),
-                    Expanded(
-                      child: Stack(
-                        children: <Widget>[
-                          Align(
-                              alignment: Alignment.topCenter,
-                              child: formContainer()),
-                          Align(
-                              alignment: Alignment.bottomCenter,
-                              child: BottomTabs(active: 'profile')),
-                        ],
-                      ),
-                    )
-                  ],
+    getUserData();
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: DefHeader(
+          onPressed: () => Navigator.of(context).pop(),
+          visibility: true,
+        ),
+        body: SingleChildScrollView(
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Container(
+                  height: MediaQuery.of(context).size.height -
+                      (82 + MediaQuery.of(context).padding.top),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      DefTitle(title: 'USER PROFILE'),
+                      Expanded(
+                        child: Stack(
+                          children: <Widget>[
+                            Align(
+                                alignment: Alignment.topCenter,
+                                child: formContainer()),
+                            Align(
+                                alignment: Alignment.bottomCenter,
+                                child: BottomTabs(active: 'profile')),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-        );
-      }
+        ),
+      ),
     );
   }
 
@@ -78,21 +69,21 @@ class _ProfileState extends State<Profile> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             DefTextField2(
-              initialValue: firstName,
+              controller: firstNameController,
               textHint: 'First name',
               enabled: false,
               type: TextInputType.text,
             ),
             SizedBox(height: 20),
             DefTextField2(
-              initialValue: lastName,
+              controller: lastNameController,
               textHint: 'Last name',
               enabled: false,
               type: TextInputType.text,
             ),
             SizedBox(height: 20),
             DefTextField2(
-              initialValue: email,
+              controller: emailController,
               textHint: 'Email',
               enabled: false,
               type: TextInputType.emailAddress,
@@ -123,11 +114,31 @@ class _ProfileState extends State<Profile> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  onTap: () => Navigator.pushNamed(context, '')),
+                  onTap: () => logout()),
             ),
           ],
         ),
       ),
     );
+  }
+
+  logout() async {
+    setState(() {
+      _isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool done = await prefs.clear();
+    if (done) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/login', (Route<dynamic> route) => false);
+      _isLoading = false;
+    }
+  }
+
+  getUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    firstNameController.text = prefs.get("firstName");
+    lastNameController.text = prefs.get("lastName");
+    emailController.text = prefs.getString('email');
   }
 }
