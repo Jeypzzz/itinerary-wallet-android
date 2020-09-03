@@ -4,12 +4,13 @@ class ItineraryCard extends StatelessWidget {
   final Function onPressed;
   final String iconName;
   final bool active;
+  final int count;
 
   Color get containerColor {
     return (active) ? Color(0xFF61AAE6) : Color.fromRGBO(220, 230, 240, 1);
   }
 
-  ItineraryCard({this.onPressed, this.iconName, this.active});
+  ItineraryCard({this.onPressed, this.iconName, this.active, this.count});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,7 +62,7 @@ class ItineraryCard extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: Colors.white,
                   ),
-                  child: Text('3', style: TextStyle(color: Colors.orange)),
+                  child: Text(count.toString(), style: TextStyle(color: Colors.orange)),
                 ),
               ),
             )

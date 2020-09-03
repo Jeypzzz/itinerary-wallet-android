@@ -25,6 +25,7 @@ class ItineraryDocuments {
     itineraryId = json['itinerary_id'];
     documentName = json['document_name'];
     documentType = json['document_type'];
+    documentType.toLowerCase();
     documentFileName = json['document_file_name'];
     startDate = json['start_date'];
     endDate = json['end_date'];

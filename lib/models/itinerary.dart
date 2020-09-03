@@ -1,3 +1,5 @@
+import 'itineraryDocument.dart';
+
 class Itineraries {
   String id;
   String itineraryCustomerId;
@@ -10,6 +12,7 @@ class Itineraries {
   String isDeleted;
   String datetimeCreated;
   String datetimeModified;
+  List<ItineraryDocuments> documents;
 
   Itineraries(
       {this.id,
@@ -22,7 +25,8 @@ class Itineraries {
       this.status,
       this.isDeleted,
       this.datetimeCreated,
-      this.datetimeModified});
+      this.datetimeModified,
+      this.documents});
 
   Itineraries.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -36,6 +40,7 @@ class Itineraries {
     isDeleted = json['is_deleted'];
     datetimeCreated = json['datetime_created'];
     datetimeModified = json['datetime_modified'];
+    documents = new List<ItineraryDocuments>.from(json["documents"].map((x) => ItineraryDocuments.fromJson(x)));
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +56,8 @@ class Itineraries {
     data['is_deleted'] = this.isDeleted;
     data['datetime_created'] = this.datetimeCreated;
     data['datetime_modified'] = this.datetimeModified;
+    data['documents'] = this.documents;
+
     return data;
   }
 }

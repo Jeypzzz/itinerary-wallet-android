@@ -3,6 +3,8 @@ import 'package:itinerary_wallet/common/bottom_tabs.dart';
 import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/def_title.dart';
 import 'package:itinerary_wallet/common/home_card.dart';
+import 'package:itinerary_wallet/models/itinerary.dart';
+import 'package:itinerary_wallet/models/itineraryDocument.dart';
 import 'package:itinerary_wallet/pages/itinerary_page/itinerary.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,98 +18,21 @@ class Home extends StatefulWidget {
 bool _isLoading = false;
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  // final List<Tab> myTabs = <Tab>[
-  //   Tab(text: 'LEFT'),
-  //   Tab(text: 'RIGHT'),
-  // ];
-  var upcommingData = [
-    {
-      'icon': ['island', 'trolley']
-    },
-    {
-      'icon': ['train', 'noodles']
-    },
-    {
-      'icon': ['boat', 'car', 'noodles']
-    },
-    {
-      'icon': [
-        'airplane',
-        'boat',
-        'island',
-        'car',
-        'trolley',
-        'noodles',
-        'train',
-        'camera'
-      ]
-    }
-  ];
-
-  var pastData = [
-    {
-      'icon': ['train', 'noodles']
-    },
-    {
-      'icon': ['airplane', 'boat', 'island', 'car']
-    }
-  ];
 
   TabController _tabController;
+  List<Itineraries> itineraries = [];
+
   @override
   void initState() {
     _tabController = new TabController(length: 2, vsync: this);
-    // getCustomer();
     getItineraries();
     super.initState();
   }
-
-  void main() {}
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  // getCustomer() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   // print(prefs.getString('customerId'));
-  //   // print(prefs.getString('firstName'));
-  //   // print(prefs.getString('lastName'));
-  //   // print(prefs.getString('email'));
-  // }
-
-  List itineraries = [];
-  getItineraries() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String customerId = prefs.getString('customerId');
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-      Response response =
-          await Dio().post("https://www.travezl.com/mobile/api/itinerary.php",
-              //data: {"customer_id": customerId});
-              data: {"customer_id": 856});
-      // print(response);
-      if (response.statusCode == 200) {
-        final res = json.decode(response.data);
-        print(res);
-        if (response.data.contains("error")) {
-          //alert box
-        } else {
-          //success
-          itineraries = res;
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } catch (error) {
-      print(error);
-      //alertbox
-    }
   }
 
   @override
@@ -159,7 +84,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           color: Colors.grey[100],
                           child: TabBarView(
                             controller: _tabController,
-                            children: <Widget>[upComming(), past()],
+                            children: <Widget>[upComing(), past()],
                           ),
                         ),
                       ),
@@ -170,18 +95,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     );
   }
 
-  Container upComming() {
+  Container upComing() {
     return Container(
       child: ListView.builder(
         itemCount: itineraries.length,
-        itemBuilder: (BuildContext ctxt, int index) {
-          var icons = upcommingData[index]['icon'];
-          //var icons = itineraries[index]['document_type'.toLowerCase()];
-          var title = itineraries[index]['itinerary_name'];
-          var endDate = itineraries[index]['travel_end_date'];
-          var startDate = itineraries[index]['travel_start_date'];
-          var itineraryId = itineraries[index]['id'];
-//var itineraryDetails = itineraries[index];
+        itemBuilder: (BuildContext buildContext, int index) {
+          var icons = getIcons(itineraries[index].documents);
+          var title = itineraries[index].itineraryName;
+          var endDate = itineraries[index].travelEndDate;
+          var startDate = itineraries[index].travelStartDate;
+          var itineraryId = itineraries[index].id;
+          var documents = itineraries[index].documents;
           return HomeCard(
               icons: icons,
               color: (index.isEven) ? Color(0xFF61AAE6) : Colors.transparent,
@@ -193,11 +117,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) => Itinerary(
-                              data: icons,
                               title: title,
                               endDate: endDate,
                               startDate: startDate,
                               itineraryId: itineraryId,
+                              itineraryDetails: documents
                             )));
                 //builder: (context) => Itinerary()));
               });
@@ -225,5 +149,46 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         //   },
         // ),
         );
+  }
+
+  getItineraries() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String customerId = prefs.getString('customerId');
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      Response response =
+      await Dio().post("https://www.travezl.com/mobile/api/itinerary.php",
+          //data: {"customer_id": customerId});
+          data: {"customer_id": 859});
+      // print(response);
+      if (response.statusCode == 200) {
+        final res = json.decode(response.data);
+        print(res);
+        if (response.data.contains("error")) {
+          //alert box
+        } else {
+          //success
+          itineraries = new List<Itineraries>.from(res.map((x) => Itineraries.fromJson(x)));
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (error) {
+      print(error);
+      //alertbox
+    }
+  }
+
+  List<String> getIcons(List<ItineraryDocuments> documents) {
+    List<String> icons = new List();
+
+    documents.forEach((element) {
+      icons.add(element.documentType.toLowerCase());
+    });
+
+    return icons;
   }
 }

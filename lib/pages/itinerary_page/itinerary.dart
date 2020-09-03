@@ -2,21 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:itinerary_wallet/common/bottom_tabs.dart';
 import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/itinerary_card.dart';
+import 'package:itinerary_wallet/models/itineraryDocument.dart';
 import 'package:itinerary_wallet/pages/itinerary_page/document.dart';
 
 class Itinerary extends StatefulWidget {
-  final List itineraryDetails;
-  final List data;
+  final List<ItineraryDocuments> itineraryDetails;
   final String title;
   final String startDate;
   final String endDate;
   final String itineraryId;
 
-  //Itinerary({this.data, this.ItineraryDetails});
-
   Itinerary(
-      {this.data,
-      this.title,
+      {this.title,
       this.itineraryDetails,
       this.endDate,
       this.startDate,
@@ -28,19 +25,20 @@ class Itinerary extends StatefulWidget {
 
 class _ItineraryState extends State<Itinerary> {
   var icons = [
-    'airplane',
-    'trolley',
-    'boat',
-    'island',
-    'camera',
-    'car',
-    'train',
-    'noodles'
+    'flights',
+    'accommodation',
+    'cruises',
+    'packages',
+    'activities',
+    'transfers',
+    'rail',
+    'others'
   ];
+
   bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    print(widget.itineraryDetails);
     return SafeArea(
       child: Scaffold(
         appBar: DefHeader(
@@ -111,7 +109,9 @@ class _ItineraryState extends State<Itinerary> {
   }
 
   Container itineraryCard(index, context) {
-    bool active = widget.data.contains(icons[index].toString());
+    int count = getIconCount(icons[index].toString());
+    bool active = count > 0;
+    widget.itineraryDetails.contains(icons[index].toString());
     return Container(
       child: ItineraryCard(
         onPressed: (active)
@@ -127,7 +127,18 @@ class _ItineraryState extends State<Itinerary> {
             : null,
         iconName: icons[index],
         active: active,
+        count: count,
       ),
     );
+  }
+
+  int getIconCount(String iconName) {
+    int count = 0;
+    widget.itineraryDetails.forEach((element) {
+      if(element.documentType.toLowerCase().contains(iconName)) {
+        count++;
+      }
+    });
+    return count;
   }
 }
