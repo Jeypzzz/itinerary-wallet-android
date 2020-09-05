@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:itinerary_wallet/common/bottom_tabs.dart';
 import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/def_title.dart';
 import 'package:itinerary_wallet/common/home_card.dart';
 import 'package:itinerary_wallet/models/itinerary.dart';
 import 'package:itinerary_wallet/models/itineraryDocument.dart';
-import 'package:itinerary_wallet/pages/itinerary_page/itinerary.dart';
+import 'package:itinerary_wallet/pages/itinerary_page/itinerary_page.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-class Home extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _HomePageState createState() => _HomePageState();
 }
 
 bool _isLoading = false;
 
-class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
   TabController _tabController;
-  List<Itineraries> itineraries = [];
+  List<Itinerary> itineraries = [];
 
   @override
   void initState() {
@@ -100,6 +101,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       child: ListView.builder(
         itemCount: itineraries.length,
         itemBuilder: (BuildContext buildContext, int index) {
+          final df = new DateFormat('MMMM dd, yyyy EEE');
           var icons = getIcons(itineraries[index].documents);
           var title = itineraries[index].itineraryName;
           var endDate = itineraries[index].travelEndDate;
@@ -111,12 +113,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               color: (index.isEven) ? Color(0xFF61AAE6) : Colors.transparent,
               textColor: (index.isEven) ? Colors.white : Colors.blue,
               title: title.toString(),
-              date: endDate.toString(),
+              date: df.format(DateTime.parse(endDate)),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Itinerary(
+                        builder: (context) => ItineraryPage(
                               title: title,
                               endDate: endDate,
                               startDate: startDate,
@@ -160,29 +162,33 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       });
       Response response =
       await Dio().post("https://www.travezl.com/mobile/api/itinerary.php",
-          //data: {"customer_id": customerId});
-          data: {"customer_id": 859});
-      // print(response);
+          data: {"customer_id": customerId});
+          // data: {"customer_id": 859});
       if (response.statusCode == 200) {
-        final res = json.decode(response.data);
-        print(res);
-        if (response.data.contains("error")) {
+        if (response.data.contains("error") || response.data.toString().length == 0) {
+          setState(() {
+            _isLoading = false;
+          });
           //alert box
         } else {
           //success
-          itineraries = new List<Itineraries>.from(res.map((x) => Itineraries.fromJson(x)));
+          final res = json.decode(response.data);
+          itineraries = new List<Itinerary>.from(res.map((x) => Itinerary.fromJson(x)));
           setState(() {
             _isLoading = false;
           });
         }
       }
     } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
       print(error);
       //alertbox
     }
   }
 
-  List<String> getIcons(List<ItineraryDocuments> documents) {
+  List<String> getIcons(List<ItineraryDocument> documents) {
     List<String> icons = new List();
 
     documents.forEach((element) {

@@ -3,12 +3,12 @@ import 'package:itinerary_wallet/common/bottom_tabs.dart';
 import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/def_title.dart';
 
-class Contact extends StatefulWidget {
+class ContactPage extends StatefulWidget {
   @override
-  _ContactState createState() => _ContactState();
+  _ContactPageState createState() => _ContactPageState();
 }
 
-class _ContactState extends State<Contact> {
+class _ContactPageState extends State<ContactPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

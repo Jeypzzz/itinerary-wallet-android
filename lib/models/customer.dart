@@ -1,4 +1,4 @@
-class customer {
+class Customer {
   String id;
   String firstName;
   String lastName;
@@ -15,7 +15,7 @@ class customer {
   String datetimeCreated;
   String datetimeModified;
 
-  customer(
+  Customer(
       {this.id,
       this.firstName,
       this.lastName,
@@ -32,7 +32,7 @@ class customer {
       this.datetimeCreated,
       this.datetimeModified});
 
-  customer.fromJson(Map<String, dynamic> json) {
+  Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['first_name'];
     lastName = json['last_name'];

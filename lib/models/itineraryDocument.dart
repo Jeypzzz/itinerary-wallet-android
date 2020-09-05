@@ -1,4 +1,4 @@
-class ItineraryDocuments {
+class ItineraryDocument {
   String id;
   String itineraryId;
   String documentName;
@@ -9,7 +9,7 @@ class ItineraryDocuments {
   String datetimeCreated;
   String datetimeModified;
 
-  ItineraryDocuments(
+  ItineraryDocument(
       {this.id,
       this.itineraryId,
       this.documentName,
@@ -20,7 +20,7 @@ class ItineraryDocuments {
       this.datetimeCreated,
       this.datetimeModified});
 
-  ItineraryDocuments.fromJson(Map<String, dynamic> json) {
+  ItineraryDocument.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     itineraryId = json['itinerary_id'];
     documentName = json['document_name'];

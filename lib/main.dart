@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:itinerary_wallet/pages/bottom_tab_page/Contact.dart';
-import 'package:itinerary_wallet/pages/bottom_tab_page/profile_page/change_password.dart';
-import 'package:itinerary_wallet/pages/bottom_tab_page/profile_page/profile.dart';
-import 'package:itinerary_wallet/pages/forgot_password_page/forgot_password.dart';
-import 'package:itinerary_wallet/pages/home_page/home.dart';
-import 'package:itinerary_wallet/pages/itinerary_page/document.dart';
-import 'package:itinerary_wallet/pages/itinerary_page/itinerary.dart';
-import 'package:itinerary_wallet/pages/login_page/login.dart';
-import 'package:itinerary_wallet/pages/bottom_tab_page/notification_page/notifications.dart';
+import 'package:itinerary_wallet/pages/bottom_tab_page/contact_page.dart';
+import 'package:itinerary_wallet/pages/bottom_tab_page/profile_page/change_password_page.dart';
+import 'package:itinerary_wallet/pages/bottom_tab_page/profile_page/profile_page.dart';
+import 'package:itinerary_wallet/pages/forgot_password_page/forgot_password_page.dart';
+import 'package:itinerary_wallet/pages/home_page/home_page.dart';
+import 'package:itinerary_wallet/pages/itinerary_page/document_page.dart';
+import 'package:itinerary_wallet/pages/itinerary_page/itinerary_page.dart';
+import 'package:itinerary_wallet/pages/login_page/login_page.dart';
+import 'package:itinerary_wallet/pages/bottom_tab_page/notification_page/notification_page.dart';
 import 'package:itinerary_wallet/pages/search_page/search.dart';
 import 'package:itinerary_wallet/pages/splashscreen/splashscreen.dart';
 
@@ -20,19 +20,13 @@ void main() => runApp(MaterialApp(
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
-        '/login': (context) => Login(),
-        '/forgot_password': (context) => ForgotPassword(),
-        '/home': (context) => Home(),
-        // '/itinerary': (context) => Itinerary(
-        //       data: [],
-        //     ),
-        '/document': (context) => Document(
-              icon: '',
-            ),
-        '/contact': (context) => Contact(),
-        '/profile': (context) => Profile(),
-        '/change_password': (context) => ChangePassword(),
-        '/notifications': (context) => Notifications(),
+        '/login': (context) => LoginPage(),
+        '/forgot_password': (context) => ForgotPasswordPage(),
+        '/home': (context) => HomePage(),
+        '/contact': (context) => ContactPage(),
+        '/profile': (context) => ProfilePage(),
+        '/change_password': (context) => ChangePasswordPage(),
+        '/notifications': (context) => NotificationPage(),
         '/search': (context) => Search()
       },
     ));

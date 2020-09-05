@@ -6,12 +6,12 @@ import 'package:itinerary_wallet/common/def_textfield2.dart';
 import 'package:itinerary_wallet/common/def_title.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
   @override
-  _ProfileState createState() => _ProfileState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfilePageState extends State<ProfilePage> {
 
   bool _isLoading = false;
   final emailController = TextEditingController();

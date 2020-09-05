@@ -9,12 +9,12 @@ import 'package:itinerary_wallet/common/def_title.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
-class ChangePassword extends StatefulWidget {
+class ChangePasswordPage extends StatefulWidget {
   @override
-  _ChangePasswordState createState() => _ChangePasswordState();
+  _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final currentPasswordController = TextEditingController();

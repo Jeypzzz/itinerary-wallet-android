@@ -4,12 +4,12 @@ import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/def_title.dart';
 import 'package:itinerary_wallet/common/document_card.dart';
 
-class Notifications extends StatefulWidget {
+class NotificationPage extends StatefulWidget {
   @override
-  _NotificationsState createState() => _NotificationsState();
+  _NotificationPageState createState() => _NotificationPageState();
 }
 
-class _NotificationsState extends State<Notifications> {
+class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -49,7 +49,7 @@ class _NotificationsState extends State<Notifications> {
       margin: EdgeInsets.only(bottom: 10),
       child: DocumentCard(
         title: '5 HR BUDAPEST IDEAL CITY TOUR & EVENING CRUISE',
-        icon: 'car',
+        icon: 'transfers',
         startDate: 'May 22, 2020',
         endDate: 'May 22, 2020',
         document: '5hr-BUD-CTour_EveningCruise_Confirmation.pdf',

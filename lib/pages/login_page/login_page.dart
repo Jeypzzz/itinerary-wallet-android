@@ -8,24 +8,20 @@ import 'package:itinerary_wallet/common/def_textfield_obscured.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:itinerary_wallet/models/customer.dart';
 
-class Login extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
 final TextEditingController emailController = new TextEditingController();
 final TextEditingController passwordController = new TextEditingController();
 bool _isLoading = false;
-// void main(List<String> args) {
-//   emailController.text = "qa2@dreamdomainz.com";
-//   passwordController.text = "123456";
-// }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    emailController.text = "qa2@dreamdomainz.com";
-    passwordController.text = "123456";
+    // emailController.text = "qa2@dreamdomainz.com";
+    // passwordController.text = "123456";
     return Container(
       child: SafeArea(
         child: Scaffold(
@@ -61,7 +57,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  logIn(String email, password) async {
+  login(String email, password) async {
     print(email);
     print(password);
     try {
@@ -130,7 +126,7 @@ class _LoginState extends State<Login> {
           ),
           SizedBox(height: 20),
           DefButton(
-            onPressed: () => logIn(emailController.text.toString(),
+            onPressed: () => login(emailController.text.toString(),
                 passwordController.text.toString()),
             //Navigator.pushNamed(context, '/home'),
             textTitle: 'Login',

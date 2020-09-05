@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:itinerary_wallet/common/bottom_tabs.dart';
 import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/itinerary_card.dart';
 import 'package:itinerary_wallet/models/itineraryDocument.dart';
-import 'package:itinerary_wallet/pages/itinerary_page/document.dart';
+import 'package:itinerary_wallet/pages/itinerary_page/document_page.dart';
 
-class Itinerary extends StatefulWidget {
-  final List<ItineraryDocuments> itineraryDetails;
+class ItineraryPage extends StatefulWidget {
+  final List<ItineraryDocument> itineraryDetails;
   final String title;
   final String startDate;
   final String endDate;
   final String itineraryId;
 
-  Itinerary(
+  ItineraryPage(
       {this.title,
       this.itineraryDetails,
       this.endDate,
@@ -20,10 +21,10 @@ class Itinerary extends StatefulWidget {
       this.itineraryId});
 
   @override
-  _ItineraryState createState() => _ItineraryState();
+  _ItineraryPageState createState() => _ItineraryPageState();
 }
 
-class _ItineraryState extends State<Itinerary> {
+class _ItineraryPageState extends State<ItineraryPage> {
   var icons = [
     'flights',
     'accommodation',
@@ -109,9 +110,11 @@ class _ItineraryState extends State<Itinerary> {
   }
 
   Container itineraryCard(index, context) {
+    final df = new DateFormat('MMMM dd, yyyy');
+    String description = df.format(DateTime.parse(this.widget.startDate)) + ' - ' + df.format(DateTime.parse(this.widget.endDate));
     int count = getIconCount(icons[index].toString());
     bool active = count > 0;
-    widget.itineraryDetails.contains(icons[index].toString());
+
     return Container(
       child: ItineraryCard(
         onPressed: (active)
@@ -119,10 +122,12 @@ class _ItineraryState extends State<Itinerary> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Document(
-                              icon: icons[index].toString(),
-                              itineraryId: this.widget.itineraryId,
-                            )));
+                        builder: (context) => DocumentPage(
+                          title: this.widget.title,
+                          description: description,
+                          icon: icons[index].toString(),
+                          itineraryDocuments: this.widget.itineraryDetails,
+                        )));
               }
             : null,
         iconName: icons[index],
@@ -134,7 +139,7 @@ class _ItineraryState extends State<Itinerary> {
 
   int getIconCount(String iconName) {
     int count = 0;
-    widget.itineraryDetails.forEach((element) {
+    this.widget.itineraryDetails.forEach((element) {
       if(element.documentType.toLowerCase().contains(iconName)) {
         count++;
       }

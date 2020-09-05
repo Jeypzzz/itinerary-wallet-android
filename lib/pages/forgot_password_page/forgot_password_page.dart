@@ -6,9 +6,9 @@ import 'package:itinerary_wallet/common/def_title.dart';
 import 'package:itinerary_wallet/validators.dart';
 import 'package:dio/dio.dart';
 
-class ForgotPassword extends StatefulWidget {
+class ForgotPasswordPage extends StatefulWidget {
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
 final emailController = TextEditingController();
@@ -32,7 +32,7 @@ forgotPassword(String email) async {
   }
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {

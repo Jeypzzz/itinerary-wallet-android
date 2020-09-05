@@ -1,19 +1,37 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:itinerary_wallet/common/bottom_tabs.dart';
 import 'package:itinerary_wallet/common/def_header.dart';
 import 'package:itinerary_wallet/common/document_card.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
-class Document extends StatelessWidget {
+import 'package:itinerary_wallet/models/itineraryDocument.dart';
+
+class DocumentPage extends StatefulWidget {
+
+  final String title;
+  final String description;
   final String icon;
-  final String itineraryId;
-  Document({this.icon, this.itineraryId});
+  final List<ItineraryDocument> itineraryDocuments;
+
+  DocumentPage({
+    this.title,
+    this.description,
+    this.icon,
+    this.itineraryDocuments
+  });
+
+  @override
+  _DocumentPageState createState() => _DocumentPageState();
+
+}
+
+class _DocumentPageState extends State<DocumentPage> {
+
   @override
   Widget build(BuildContext context) {
-    getDocument();
     return SafeArea(
       child: Scaffold(
         appBar: DefHeader(
@@ -25,35 +43,6 @@ class Document extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<dynamic> document = [];
-  String title;
-  String description;
-  getDocument() async {
-    try {
-      Response response = await Dio()
-          .post("https://www.travezl.com/mobile/api/itinerary_document.php",
-              //data: {"customer_id": customerId});
-              data: {"itinerary_id": 6});
-      // print(response);
-      if (response.statusCode == 200) {
-        final res = json.decode(response.data);
-        print(res);
-        print("taas n2");
-        //print(res);
-        if (response.data.contains("error")) {
-          //alert box
-        } else {
-          //success
-          document = res;
-          print('asdf');
-        }
-      }
-    } catch (error) {
-      print(error);
-      //alertbox
-    }
   }
 
   Container titleContainer() {
@@ -72,11 +61,11 @@ class Document extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Text(
-            document[0]['document_name'] ?? 'asdf',
+             this.widget.title,
             style: TextStyle(color: Colors.white, fontSize: 17),
           ),
           Text(
-            'May 20, 2020 May 31, 2020',
+            this.widget.description,
             style: TextStyle(color: Colors.white),
           ),
         ],
@@ -89,7 +78,7 @@ class Document extends StatelessWidget {
       child: Container(
           child: ListView.builder(
         padding: EdgeInsets.all(30),
-        itemCount: 3,
+        itemCount: this.widget.itineraryDocuments.length,
         itemBuilder: (BuildContext context, int index) {
           return documentCard(index);
         },
@@ -98,14 +87,15 @@ class Document extends StatelessWidget {
   }
 
   Container documentCard(index) {
+    final df = new DateFormat('MMMM dd, yyyy');
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       child: DocumentCard(
-        title: '5 HR BUDAPEST IDEAL CITY TOUR & EVENING CRUISE',
-        icon: icon,
-        startDate: 'May 22, 2020',
-        endDate: 'May 22, 2020',
-        document: '5hr-BUD-CTour_EveningCruise_Confirmation.pdf',
+        title: this.widget.itineraryDocuments[index].documentName,
+        icon: this.widget.icon,
+        startDate: df.format(DateTime.parse(this.widget.itineraryDocuments[index].startDate)),
+        endDate: df.format(DateTime.parse(this.widget.itineraryDocuments[index].endDate)),
+        document: this.widget.itineraryDocuments[index].documentFileName,
         backColor: (index.isOdd) ? Color(0xFF61AAE6) : Colors.white,
       ),
     );
