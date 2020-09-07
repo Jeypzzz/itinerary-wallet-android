@@ -6,18 +6,18 @@ import 'package:itinerary_wallet/common/def_textfield.dart';
 import 'package:dio/dio.dart';
 import 'package:itinerary_wallet/common/def_textfield_obscured.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:itinerary_wallet/models/customer.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-final TextEditingController emailController = new TextEditingController();
-final TextEditingController passwordController = new TextEditingController();
-bool _isLoading = false;
-
 class _LoginPageState extends State<LoginPage> {
+
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     // emailController.text = "qa2@dreamdomainz.com";
@@ -58,36 +58,34 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   login(String email, password) async {
-    print(email);
-    print(password);
+    // print(email);
+    // print(password);
     try {
-      // setState(() {
-      //   _isLoading = true;
-      // });
+      setState(() {
+        _isLoading = true;
+      });
       Response response = await Dio().post(
           "https://www.travezl.com/mobile/api/login.php",
           data: {"email": email, "password": password});
       print(response);
       if (response.statusCode == 200) {
         final res = json.decode(response.data);
-
         if (response.data.contains("error")) {
           setState(() {
             _isLoading = false;
           });
+          showAlertDialog(context, res['message']);
         } else {
-          // final List rawData = jsonDecode(jsonEncode(response.data));
-          // List<customer> listCustomerModel =
-          //     rawData.map((e) => customer.fromJson(e)).toList();
-          // print(res['id']);
+          setState(() {
+            _isLoading = false;
+          });
           setPreferences(
               res['id'], res['first_name'], res['last_name'], res['email']);
           Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
         }
       }
     } catch (error) {
-      print(error);
-      //alertbox
+      showAlertDialog(context, error.message);
     }
   }
 
@@ -148,31 +146,30 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  showAlertDialog(BuildContext context, String message) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 }
-
-//
-
-// showAlertDialog(BuildContext context) {
-//   // set up the button
-//   Widget okButton = FlatButton(
-//     child: Text("OK"),
-//     onPressed: () {},
-//   );
-
-//   // set up the AlertDialog
-//   AlertDialog alert = AlertDialog(
-//     title: Text("My title"),
-//     content: Text("This is my message."),
-//     actions: [
-//       okButton,
-//     ],
-//   );
-
-//   // show the dialog
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return alert;
-//     },
-//   );
-// }

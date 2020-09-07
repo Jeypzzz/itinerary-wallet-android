@@ -22,6 +22,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   TabController _tabController;
   List<Itinerary> itineraries = [];
+  List<Itinerary> upComingItineraries = [];
+  List<Itinerary> pastItineraries = [];
 
   @override
   void initState() {
@@ -99,15 +101,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Container upComing() {
     return Container(
       child: ListView.builder(
-        itemCount: itineraries.length,
+        itemCount: upComingItineraries.length,
         itemBuilder: (BuildContext buildContext, int index) {
           final df = new DateFormat('MMMM dd, yyyy EEE');
-          var icons = getIcons(itineraries[index].documents);
-          var title = itineraries[index].itineraryName;
-          var endDate = itineraries[index].travelEndDate;
-          var startDate = itineraries[index].travelStartDate;
-          var itineraryId = itineraries[index].id;
-          var documents = itineraries[index].documents;
+          var icons = getIcons(upComingItineraries[index].documents);
+          var title = upComingItineraries[index].itineraryName;
+          var endDate = upComingItineraries[index].travelEndDate;
+          var startDate = upComingItineraries[index].travelStartDate;
+          var itineraryId = upComingItineraries[index].id;
+          var documents = upComingItineraries[index].documents;
           return HomeCard(
               icons: icons,
               color: (index.isEven) ? Color(0xFF61AAE6) : Colors.transparent,
@@ -134,22 +136,36 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Container past() {
     return Container(
-        // child: ListView.builder(
-        //   itemCount: pastData.length,
-        //   itemBuilder: (BuildContext ctxt, int index) {
-        //     var icons = pastData[index]['icon'];
-        //     return HomeCard(
-        //         icons: icons,
-        //         color: Colors.grey,
-        //         textColor: Colors.white,
-        //         onTap: () {
-        //           Navigator.push(
-        //               context,
-        //               MaterialPageRoute(
-        //                   builder: (context) => Itinerary(data: icons)));
-        //         });
-        //   },
-        // ),
+        child: ListView.builder(
+          itemCount: pastItineraries.length,
+          itemBuilder: (BuildContext buildContext, int index) {
+            final df = new DateFormat('MMMM dd, yyyy EEE');
+            var icons = getIcons(pastItineraries[index].documents);
+            var title = pastItineraries[index].itineraryName;
+            var endDate = pastItineraries[index].travelEndDate;
+            var startDate = pastItineraries[index].travelStartDate;
+            var itineraryId = pastItineraries[index].id;
+            var documents = pastItineraries[index].documents;
+            return HomeCard(
+                icons: icons,
+                color: Colors.grey,
+                textColor: Colors.white,
+                title: title.toString(),
+                date: df.format(DateTime.parse(endDate)),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ItineraryPage(
+                              title: title,
+                              endDate: endDate,
+                              startDate: startDate,
+                              itineraryId: itineraryId,
+                              itineraryDetails: documents
+                          )));
+                });
+          },
+        ),
         );
   }
 
@@ -163,28 +179,29 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       Response response =
       await Dio().post("https://www.travezl.com/mobile/api/itinerary.php",
           data: {"customer_id": customerId});
-          // data: {"customer_id": 859});
+          // data: {"customer_id": 858});
       if (response.statusCode == 200) {
-        if (response.data.contains("error") || response.data.toString().length == 0) {
-          setState(() {
-            _isLoading = false;
-          });
-          //alert box
+        if (response.data.contains("error")) {
+          final res = json.decode(response.data);
+          showAlertDialog(context, res['message']);
         } else {
           //success
-          final res = json.decode(response.data);
-          itineraries = new List<Itinerary>.from(res.map((x) => Itinerary.fromJson(x)));
-          setState(() {
-            _isLoading = false;
-          });
+          if(response.data.toString().length != 0) {
+            final res = json.decode(response.data);
+            itineraries = new List<Itinerary>.from(res.map((x) => Itinerary.fromJson(x)));
+            populateLists();
+          }
         }
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (error) {
       setState(() {
         _isLoading = false;
       });
       print(error);
-      //alertbox
+      // showAlertDialog(context, error.message);
     }
   }
 
@@ -196,5 +213,47 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     });
 
     return icons;
+  }
+
+  populateLists() {
+    for(var item in itineraries){
+      var now = new DateTime.now();
+      var endDate = DateTime.parse(item.travelEndDate);
+      bool isPast = endDate.isAfter(now);
+
+      upComingItineraries.clear();
+      pastItineraries.clear();
+      if(item.status != "1" || isPast) {
+        pastItineraries.add(item);
+      } else {
+        upComingItineraries.add(item);
+      }
+    }
+  }
+
+  showAlertDialog(BuildContext context, String message) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

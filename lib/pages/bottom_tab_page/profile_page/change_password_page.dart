@@ -19,7 +19,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final emailController = TextEditingController();
   final currentPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
-  final confirmNewPasswordContraoller = TextEditingController();
+  final confirmNewPasswordController = TextEditingController();
   String firstName;
   String lastName;
   String email;
@@ -46,6 +46,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       if (response.statusCode == 200) {
         final res = json.decode(response.data);
         if (response.data.contains("error")) {
+          showAlertDialog(context, res['message']);
         } else {
           Navigator.pushNamed(context, '/home');
         }
@@ -147,6 +148,32 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           ),
         ),
       ),
+    );
+  }
+
+  showAlertDialog(BuildContext context, String message) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
